@@ -4,9 +4,12 @@ import com.example.eshop.dto.product.ProductRequest;
 import com.example.eshop.dto.product.ProductResponse;
 import com.example.eshop.entities.Category;
 import com.example.eshop.entities.Product;
+import com.example.eshop.entities.User;
 import com.example.eshop.exception.NotFoundException;
 import com.example.eshop.repository.CategoryRepository;
 import com.example.eshop.repository.ProductRepository;
+import com.example.eshop.role.Role;
+import com.example.eshop.service.AuthService;
 import com.example.eshop.service.ProductService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -22,6 +25,8 @@ import java.util.Optional;
 public class ProductServiceImpl implements ProductService {
     private final ProductRepository productRepository;
     private final CategoryRepository categoryRepository;
+    private final AuthService authService;
+    private final ProductMapper productMapper;
 
 
     @Override
@@ -51,13 +56,13 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public List<ProductResponse> getAll(String token) {
-//        User user = authService.getUsernameFromToken(token);
-//        if(!user.getRole().equals(Role.ADMIN)) {
-//            System.out.println("user");
-//            List<ProductResponse> phoneResponses = productMapper.toDtoS(productRepository.findAllByIsExist(true));
-//            return phoneResponses;
-//        }
-//        return productMapper.toDtoS(productRepository.findAll());
+        User user = authService.getUsernameFromToken(token);
+        if(!user.getRole().equals(Role.Admin)) {
+            System.out.println("user");
+            List<ProductResponse> phoneResponses = productMapper.toDtoS(productRepository.findAllByIsExist(true));
+            return phoneResponses;
+        }
+        return productMapper.toDtoS(productRepository.findAll());
         return null;
     }
 

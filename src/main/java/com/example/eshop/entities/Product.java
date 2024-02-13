@@ -1,6 +1,6 @@
 package com.example.eshop.entities;
 
-import com.example.eshop.Role.Type;
+import com.example.eshop.role.Type;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;

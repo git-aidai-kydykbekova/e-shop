@@ -1,4 +1,4 @@
-package com.example.eshop.Role;
+package com.example.eshop.role;
 
 public enum Type {
     Living, Dining, Bedroom
