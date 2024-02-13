@@ -11,4 +11,6 @@ public interface ProductService {
     List<ProductResponse> getAll(String token);
 
     void buyProduct(Long productId, String token);
+
+    List<ProductResponse> getMyProducts(String token);
 }

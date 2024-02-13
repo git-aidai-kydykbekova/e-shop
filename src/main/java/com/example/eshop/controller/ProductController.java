@@ -26,4 +26,8 @@ public class ProductController {
     public void buyProduct(@PathVariable Long productId,@RequestHeader ("Authorization") String token) {
         productService.buyProduct(productId, token);
     }
+    @GetMapping("/user/basket")
+    public List<ProductResponse> userBasket(@RequestHeader ("Authorization") String token) {
+        return productService.getMyProducts(token);
+    }
 }

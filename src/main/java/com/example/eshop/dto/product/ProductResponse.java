@@ -17,4 +17,5 @@ public class ProductResponse {
     private String date;
     private boolean isExist;
     private String category;
+    private String type;
 }

@@ -6,9 +6,12 @@ import com.example.eshop.entities.Category;
 import com.example.eshop.entities.Product;
 import com.example.eshop.entities.User;
 import com.example.eshop.exception.NotFoundException;
+import com.example.eshop.mapper.ProductMapper;
 import com.example.eshop.repository.CategoryRepository;
 import com.example.eshop.repository.ProductRepository;
+import com.example.eshop.repository.UserRepository;
 import com.example.eshop.role.Role;
+import com.example.eshop.role.Type;
 import com.example.eshop.service.AuthService;
 import com.example.eshop.service.ProductService;
 import lombok.AllArgsConstructor;
@@ -16,6 +19,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -27,6 +31,7 @@ public class ProductServiceImpl implements ProductService {
     private final CategoryRepository categoryRepository;
     private final AuthService authService;
     private final ProductMapper productMapper;
+    private final UserRepository userRepository;
 
 
     @Override
@@ -37,13 +42,13 @@ public class ProductServiceImpl implements ProductService {
         }
         Product product = new Product();
         product.setName(productRequest.getName());
-        product.setDescription(product.getDescription());
-        product.setSize(product.getSize());
-        product.setColor(product.getColor());
-        product.setSKU(product.getSKU());
-        product.setPrice(product.getPrice());
+        product.setDescription(productRequest.getDescription());
+        product.setSize(productRequest.getSize());
+        product.setColor(productRequest.getColor());
+        product.setSKU(productRequest.getSKU());
+        product.setPrice(productRequest.getPrice());
         product.setDate(LocalDateTime.now().toString());
-        product.setType(product.getType());
+        product.setType(Type.valueOf(productRequest.getType()));
         product.setExist(true);
         Optional<Category> category = categoryRepository.findByName(productRequest.getCategory());
         if(category.isEmpty()) {
@@ -63,12 +68,35 @@ public class ProductServiceImpl implements ProductService {
             return phoneResponses;
         }
         return productMapper.toDtoS(productRepository.findAll());
-        return null;
+
     }
 
     @Override
     public void buyProduct(Long productId, String token) {
+        User user = authService.getUsernameFromToken(token);
+        Optional<Product> product = productRepository.findById(productId);
+        if(product.isEmpty()) {
+            throw new NotFoundException("this product sold", HttpStatus.BAD_REQUEST);
+        }
+        product.get().setExist(false);
+        List<Product>products = new ArrayList<>();
+        if(!user.getCustomer().getProducts().isEmpty()) {
+            products = user.getCustomer().getProducts();
+        }
+        products.add(product.get());
+        user.getCustomer().setProducts(products);
 
+        userRepository.save(user);
 
+    }
+
+    @Override
+    public List<ProductResponse> getMyProducts(String token) {
+        User user = authService.getUsernameFromToken(token);
+        if(!user.getRole().equals(Role.Admin)) {
+            List<ProductResponse> productResponses = productMapper.toDtoS(user.getCustomer().getProducts());
+            return productResponses;
+        }
+        return null;
     }
 }

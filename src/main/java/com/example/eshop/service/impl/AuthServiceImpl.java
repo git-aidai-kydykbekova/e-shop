@@ -4,7 +4,7 @@ package com.example.eshop.service.impl;
 import com.example.eshop.config.JwtService;
 import com.example.eshop.dto.Auth.AuthRequest;
 import com.example.eshop.dto.Auth.AuthResponse;
-import com.example.eshop.dto.user.UserRegisterRequest;
+import com.example.eshop.dto.userDto.UserRegisterRequest;
 import com.example.eshop.entities.Customer;
 import com.example.eshop.entities.User;
 import com.example.eshop.exception.BadCredentialsException;
@@ -12,11 +12,15 @@ import com.example.eshop.repository.UserRepository;
 import com.example.eshop.role.Role;
 import com.example.eshop.service.AuthService;
 import lombok.AllArgsConstructor;
+import net.minidev.json.JSONObject;
+import net.minidev.json.parser.JSONParser;
+import net.minidev.json.parser.ParseException;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.stereotype.Service;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
+import java.util.Base64;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
@@ -24,9 +28,10 @@ import java.util.Optional;
 @Service
 @AllArgsConstructor
 public class AuthServiceImpl implements AuthService {
-    private final UserRepository userRepository;
-    private PasswordEncoder passwordEncoder;
-    private AuthenticationManager authenticationManager;
+
+    private  UserRepository userRepository;
+    private  PasswordEncoder passwordEncoder;
+    private  AuthenticationManager authenticationManager;
     private final JwtService jwtService;
     @Override
     public void register(UserRegisterRequest userRegisterRequest) {
@@ -63,17 +68,34 @@ public class AuthServiceImpl implements AuthService {
         return convertToResponse(user);
 
     }
+
+    @Override
+    public User getUsernameFromToken(String token) {
+        String[] chunks = token.substring(7).split("\\.");
+        Base64.Decoder decoder = Base64.getUrlDecoder();
+
+        JSONParser jsonParser = new JSONParser();
+        JSONObject object = null;
+        try {
+            object = (JSONObject) jsonParser.parse(decoder.decode(chunks[1]));
+        } catch (ParseException e) {
+            throw new RuntimeException(e);
+        }
+        return userRepository.findByEmail(String.valueOf(object.get("sub"))).orElseThrow(() -> new RuntimeException("user can be null"));
+    }
+
     private AuthResponse convertToResponse(Optional<User> user) {
-        AuthResponse authLoginResponse = new AuthResponse();
-        authLoginResponse.setEmail(user.get().getEmail());
-        authLoginResponse.setId(user.get().getId());
+        AuthResponse authResponse = new AuthResponse();
+        authResponse.setEmail(user.get().getEmail());
+        authResponse.setId(user.get().getId());
+
         if (user.get().getRole().equals(Role.Customer))
-            authLoginResponse.setName(user.get().getCustomer().getName());
+            authResponse.setName(user.get().getCustomer().getName());
         Map<String, Object> extraClaims = new HashMap<>();
 
         String token = jwtService.generateToken(extraClaims, user.get());
-        authLoginResponse.setToken(token);
+        authResponse.setToken(token);
 
-        return authLoginResponse;
+        return authResponse;
     }
 }

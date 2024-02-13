@@ -16,5 +16,5 @@ public class ProductRequest {
     private String color;
     private String SKU;
     private String category;
-    private Type type;
+    private String type;
 }

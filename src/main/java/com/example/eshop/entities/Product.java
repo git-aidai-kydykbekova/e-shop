@@ -23,10 +23,14 @@ public class Product {
     private Integer price;
     private String date;
     private boolean isExist = true;
+//    @Enumerated(EnumType.STRING)
     private Type type;
 
     @ManyToOne
     private Category category;
+
+    @ManyToOne()
+    private Customer customer;
 
 
 }
