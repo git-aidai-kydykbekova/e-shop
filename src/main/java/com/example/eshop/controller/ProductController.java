@@ -30,4 +30,12 @@ public class ProductController {
     public List<ProductResponse> userBasket(@RequestHeader ("Authorization") String token) {
         return productService.getMyProducts(token);
     }
+    @DeleteMapping("/delete/{productId}")
+    public void delete(@PathVariable Long productId,@RequestHeader("Authorization") String token) {
+        productService.deleteProduct(productId, token);
+    }
+    @PutMapping("/update/{productId}")
+    public void updateById(@PathVariable Long productId, @RequestBody ProductRequest productRequest, @RequestHeader ("Authorization") String token){
+        productService.updateById(productId, productRequest, token);
+    }
 }

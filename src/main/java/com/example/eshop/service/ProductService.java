@@ -13,4 +13,8 @@ public interface ProductService {
     void buyProduct(Long productId, String token);
 
     List<ProductResponse> getMyProducts(String token);
+
+    void deleteProduct(Long productId, String token);
+
+    void updateById(Long productId, ProductRequest productRequest, String token);
 }
