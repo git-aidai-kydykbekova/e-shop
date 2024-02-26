@@ -5,11 +5,13 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.List;
 
 
 @Getter
 @Setter
 @Entity
+@Table
 public class Product {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -25,6 +27,8 @@ public class Product {
     private boolean isExist = true;
 //    @Enumerated(EnumType.STRING)
     private Type type;
+    private Double rating;
+    private Integer totalreview;
 
     @ManyToOne
     private Category category;
@@ -32,5 +36,7 @@ public class Product {
     @ManyToOne()
     private Customer customer;
 
+    @OneToMany()
+    private List<Review> productReview;
 
 }

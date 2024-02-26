@@ -50,6 +50,7 @@ public class ProductServiceImpl implements ProductService {
         product.setPrice(productRequest.getPrice());
         product.setDate(LocalDateTime.now().toString());
         product.setType(Type.valueOf(productRequest.getType()));
+        product.setRating(productRequest.getRating());
         product.setExist(true);
         Optional<Category> category = categoryRepository.findByName(productRequest.getCategory());
         if(category.isEmpty()) {
@@ -70,6 +71,10 @@ public class ProductServiceImpl implements ProductService {
         }
         return productMapper.toDtoS(productRepository.findAll());
 
+    }
+
+    public Product getProductById(Long productId) {
+        return productRepository.findById(productId).orElse(null);
     }
 
     @Override

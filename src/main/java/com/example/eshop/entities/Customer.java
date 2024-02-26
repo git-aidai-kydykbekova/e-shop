@@ -9,6 +9,7 @@ import java.util.List;
 @Entity
 @Getter
 @Setter
+@Table
 public class Customer {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

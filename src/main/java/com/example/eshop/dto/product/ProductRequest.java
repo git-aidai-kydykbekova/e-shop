@@ -17,4 +17,5 @@ public class ProductRequest {
     private String SKU;
     private String category;
     private String type;
+    private Double rating;
 }

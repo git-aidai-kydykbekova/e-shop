@@ -18,4 +18,5 @@ public class ProductResponse {
     private boolean isExist;
     private String category;
     private String type;
+    private Double rating;
 }
