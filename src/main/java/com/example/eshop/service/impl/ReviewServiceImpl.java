@@ -40,7 +40,7 @@ public class ReviewServiceImpl implements ReviewService {
             // Сохраняем отзыв в базе данных
             reviewRepository.save(review);
 
-            if(product.getRating() != null) {
+            if(product.getRating() != null && product.getTotalreview() != null) {
                 int totalReviews = product.getTotalreview();
                 double existingRating = product.getRating();
                 double newRating = ((existingRating * totalReviews) + reviewRequest.getRating()) / (totalReviews + 1);

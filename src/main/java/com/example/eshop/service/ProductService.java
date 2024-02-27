@@ -1,5 +1,6 @@
 package com.example.eshop.service;
 
+import com.example.eshop.dto.Review.ReviewResponse;
 import com.example.eshop.dto.product.ProductRequest;
 import com.example.eshop.dto.product.ProductResponse;
 import com.example.eshop.entities.Product;
@@ -10,6 +11,8 @@ public interface ProductService {
     void addProduct(ProductRequest productRequest, String token);
 
     List<ProductResponse> getAll(String token);
+
+    List<ReviewResponse> comments(Long productId);
 
     void buyProduct(Long productId, String token);
 
