@@ -17,4 +17,8 @@ public interface ProductService {
     void deleteProduct(Long productId, String token);
 
     void updateById(Long productId, ProductRequest productRequest, String token);
+
+    void addFavoriteProduct(Long productId, String token);
+
+    List<ProductResponse> getMyFavoriteProducts(String token);
 }

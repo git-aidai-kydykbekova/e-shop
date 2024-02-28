@@ -84,6 +84,15 @@ public class AuthServiceImpl implements AuthService {
         return userRepository.findByEmail(String.valueOf(object.get("sub"))).orElseThrow(() -> new RuntimeException("user can be null"));
     }
 
+//    @Override
+//    public void addReview(AuthReviewRequest authReviewRequest, String token) {
+////        User user = authService.getUsernameFromToken(token);
+////        if(user.getRole().equals(Role.Customer)) {
+////
+////        }
+//    }
+
+
     private AuthResponse convertToResponse(Optional<User> user) {
         AuthResponse authResponse = new AuthResponse();
         authResponse.setEmail(user.get().getEmail());

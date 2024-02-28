@@ -145,6 +145,34 @@ public class ProductServiceImpl implements ProductService {
 
     }
 
+    @Override
+    public void addFavoriteProduct(Long productId, String token) {
+//        User user = authService.getUsernameFromToken(token);
+//        Optional<Product> product = productRepository.findById(productId);
+//        if(product.isEmpty()) {
+//            throw new NotFoundException("this product sold", HttpStatus.BAD_REQUEST);
+//        }
+//        List<Product> favoriteProducts = new ArrayList<>();
+////        if(!user.getCustomer().getProducts().isEmpty()) {
+////            favoriteProducts = user.getCustomer().getProducts();
+////        }
+//        favoriteProducts.add(product.get());
+//        System.out.println("Add product " + product.get().getName());
+//        user.getCustomer().setProducts(favoriteProducts);
+//        System.out.println("add in list" );
+//        userRepository.save(user);
+    }
+
+    @Override
+    public List<ProductResponse> getMyFavoriteProducts(String token) {
+//        User user = authService.getUsernameFromToken(token);
+//        if(!user.getRole().equals(Role.Admin)) {
+//            List<ProductResponse> favoriteProducts = productMapper.favoriteProducts(user.getCustomer().getProducts());
+//            return favoriteProducts;
+//        }
+        return null;
+    }
+
 
     private boolean containsType(String type) {
         for (Type type1:Type.values()){

@@ -19,6 +19,16 @@ public class ProductMapperImpl implements ProductMapper {
         }
         return productResponses;
     }
+
+    @Override
+    public List<ProductResponse> favoriteProducts(List<Product> products) {
+        List<ProductResponse> favoriteProducts = new ArrayList<>();
+        for(Product product: products) {
+            favoriteProducts.add(toDto(product));
+        }
+        return favoriteProducts;
+    }
+
     public ProductResponse toDto(Product product) {
 
         ProductResponse productResponse = new ProductResponse();
