@@ -1,5 +1,6 @@
 package com.example.eshop.service.impl;
 
+import com.example.eshop.dto.Review.ReviewResponse;
 import com.example.eshop.dto.product.ProductRequest;
 import com.example.eshop.dto.product.ProductResponse;
 import com.example.eshop.entities.Category;
@@ -8,6 +9,7 @@ import com.example.eshop.entities.User;
 import com.example.eshop.exception.BadRequestException;
 import com.example.eshop.exception.NotFoundException;
 import com.example.eshop.mapper.ProductMapper;
+import com.example.eshop.mapper.ReviewMapper;
 import com.example.eshop.repository.CategoryRepository;
 import com.example.eshop.repository.ProductRepository;
 import com.example.eshop.repository.UserRepository;
@@ -18,6 +20,7 @@ import com.example.eshop.service.ProductService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.RequestHeader;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -33,6 +36,7 @@ public class ProductServiceImpl implements ProductService {
     private final AuthService authService;
     private final ProductMapper productMapper;
     private final UserRepository userRepository;
+    private final ReviewMapper reviewMapper;
 
 
     @Override
@@ -50,6 +54,7 @@ public class ProductServiceImpl implements ProductService {
         product.setPrice(productRequest.getPrice());
         product.setDate(LocalDateTime.now().toString());
         product.setType(Type.valueOf(productRequest.getType()));
+        product.setRating(productRequest.getRating());
         product.setExist(true);
         Optional<Category> category = categoryRepository.findByName(productRequest.getCategory());
         if(category.isEmpty()) {
@@ -71,6 +76,18 @@ public class ProductServiceImpl implements ProductService {
         return productMapper.toDtoS(productRepository.findAll());
 
     }
+
+    public Product getProductById(Long productId) {
+        return productRepository.findById(productId).orElse(null);
+    }
+
+    @Override
+    public List<ReviewResponse> comments(Long productId) {
+        Optional<Product> product = productRepository.findById(productId);
+        List<ReviewResponse> reviewResponses = reviewMapper.toDtoS(product.get().getProductReview());
+        return reviewResponses;
+    }
+
 
     @Override
     public void buyProduct(Long productId, String token) {
@@ -147,29 +164,31 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public void addFavoriteProduct(Long productId, String token) {
-//        User user = authService.getUsernameFromToken(token);
-//        Optional<Product> product = productRepository.findById(productId);
-//        if(product.isEmpty()) {
-//            throw new NotFoundException("this product sold", HttpStatus.BAD_REQUEST);
+        User user = authService.getUsernameFromToken(token);
+        Optional<Product> product = productRepository.findById(productId);
+        if(product.isEmpty()) {
+            throw new NotFoundException("this product sold", HttpStatus.BAD_REQUEST);
+        }
+        List<Product> favoriteProducts = user.getCustomer().getFavoriteProducts();
+//        if(!user.getCustomer().getFavoriteProducts().isEmpty()) {
+//            favoriteProducts = user.getCustomer().getFavoriteProducts();
 //        }
-//        List<Product> favoriteProducts = new ArrayList<>();
-////        if(!user.getCustomer().getProducts().isEmpty()) {
-////            favoriteProducts = user.getCustomer().getProducts();
-////        }
-//        favoriteProducts.add(product.get());
-//        System.out.println("Add product " + product.get().getName());
-//        user.getCustomer().setProducts(favoriteProducts);
+        favoriteProducts.add(product.get());
+        if(favoriteProducts.contains(product.get()))
+            throw new BadRequestException("This product already in favorites!");
+        System.out.println("Add product " + product.get().getName());
+        user.getCustomer().setFavoriteProducts(favoriteProducts);
 //        System.out.println("add in list" );
-//        userRepository.save(user);
+        userRepository.save(user);
     }
 
     @Override
     public List<ProductResponse> getMyFavoriteProducts(String token) {
-//        User user = authService.getUsernameFromToken(token);
-//        if(!user.getRole().equals(Role.Admin)) {
-//            List<ProductResponse> favoriteProducts = productMapper.favoriteProducts(user.getCustomer().getProducts());
-//            return favoriteProducts;
-//        }
+        User user = authService.getUsernameFromToken(token);
+        if(!user.getRole().equals(Role.Admin)) {
+            List<ProductResponse> favoriteProducts = productMapper.favoriteProducts(user.getCustomer().getFavoriteProducts());
+            return favoriteProducts;
+        }
         return null;
     }
 

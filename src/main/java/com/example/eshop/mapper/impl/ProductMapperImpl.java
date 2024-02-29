@@ -39,7 +39,7 @@ public class ProductMapperImpl implements ProductMapper {
         productResponse.setSize(product.getSize());
         productResponse.setSKU(product.getSKU());
         productResponse.setCategory(product.getCategory().getName());
-        productResponse.setExist(product.isExist());
+       // productResponse.setExist(product.isExist());
         productResponse.setDescription(product.getDescription());
         productResponse.setColor(product.getColor());
         productResponse.setType(String.valueOf(product.getType()));

@@ -1,5 +1,6 @@
 package com.example.eshop.controller;
 
+import com.example.eshop.dto.Review.ReviewResponse;
 import com.example.eshop.dto.product.ProductRequest;
 import com.example.eshop.dto.product.ProductResponse;
 import com.example.eshop.service.ProductService;
@@ -21,6 +22,11 @@ public class ProductController {
     @GetMapping("/list")
     public List<ProductResponse> productResponses(@RequestHeader ("Authorization") String token) {
         return productService.getAll(token);
+    }
+
+    @GetMapping("/myproducts")
+    public List<ProductResponse> getMyProducts(@RequestHeader ("Authorization") String token){
+        return productService.getMyProducts(token);
     }
     @PostMapping("/buy/{productId}")
     public void buyProduct(@PathVariable Long productId,@RequestHeader ("Authorization") String token) {
@@ -47,4 +53,9 @@ public class ProductController {
         return productService.getMyFavoriteProducts(token);
     }
 
+
+    @GetMapping("/comments/{productId}")
+    public List<ReviewResponse> comments(@PathVariable Long productId) {
+        return productService.comments(productId);
+    }
 }

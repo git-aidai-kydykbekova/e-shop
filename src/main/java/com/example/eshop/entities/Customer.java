@@ -9,6 +9,7 @@ import java.util.List;
 @Entity
 @Getter
 @Setter
+@Table
 public class Customer {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -19,7 +20,9 @@ public class Customer {
     @OneToOne(mappedBy = "customer")
     private User user;
 
-    @OneToMany()
+    @ManyToMany
     private List<Product> products;
+    @ManyToMany
+    private List<Product> favoriteProducts;
 
 }
