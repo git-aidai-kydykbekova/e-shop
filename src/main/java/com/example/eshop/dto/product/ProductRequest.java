@@ -3,8 +3,6 @@ package com.example.eshop.dto.product;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.lang.reflect.Type;
-
 @Getter
 @Setter
 public class ProductRequest {
