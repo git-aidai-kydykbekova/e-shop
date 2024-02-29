@@ -20,7 +20,9 @@ public class Customer {
     @OneToOne(mappedBy = "customer")
     private User user;
 
-    @OneToMany()
+    @ManyToMany
     private List<Product> products;
+    @ManyToMany
+    private List<Product> favoriteProducts;
 
 }

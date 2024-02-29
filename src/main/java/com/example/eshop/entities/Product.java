@@ -33,8 +33,8 @@ public class Product {
     @ManyToOne
     private Category category;
 
-    @ManyToOne()
-    private Customer customer;
+    @ManyToMany()
+    private List<Customer> customer;
 
     @OneToMany()
     private List<Review> productReview;

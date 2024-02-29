@@ -15,7 +15,7 @@ public class ProductResponse {
     private String color;
     private String SKU;
     private String date;
-    private boolean isExist;
+    //private boolean isExist;
     private String category;
     private String type;
     private Double rating;

@@ -23,4 +23,8 @@ public interface ProductService {
     void updateById(Long productId, ProductRequest productRequest, String token);
 
     Product getProductById(Long productId);
+
+    void addFavoriteProduct(Long productId, String token);
+
+    List<ProductResponse> getMyFavoriteProducts(String token);
 }

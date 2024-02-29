@@ -20,7 +20,6 @@ import com.example.eshop.service.ProductService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.RequestHeader;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -160,6 +159,36 @@ public class ProductServiceImpl implements ProductService {
         else
             throw new NotFoundException("This function is available only for ADMIN", HttpStatus.BAD_REQUEST);
 
+    }
+
+    @Override
+    public void addFavoriteProduct(Long productId, String token) {
+        User user = authService.getUsernameFromToken(token);
+        Optional<Product> product = productRepository.findById(productId);
+        if(product.isEmpty()) {
+            throw new NotFoundException("this product sold", HttpStatus.BAD_REQUEST);
+        }
+        List<Product> favoriteProducts = user.getCustomer().getFavoriteProducts();
+//        if(!user.getCustomer().getFavoriteProducts().isEmpty()) {
+//            favoriteProducts = user.getCustomer().getFavoriteProducts();
+//        }
+        favoriteProducts.add(product.get());
+        if(favoriteProducts.contains(product.get()))
+            throw new BadRequestException("This product already in favorites!");
+        System.out.println("Add product " + product.get().getName());
+        user.getCustomer().setFavoriteProducts(favoriteProducts);
+//        System.out.println("add in list" );
+        userRepository.save(user);
+    }
+
+    @Override
+    public List<ProductResponse> getMyFavoriteProducts(String token) {
+        User user = authService.getUsernameFromToken(token);
+        if(!user.getRole().equals(Role.Admin)) {
+            List<ProductResponse> favoriteProducts = productMapper.favoriteProducts(user.getCustomer().getFavoriteProducts());
+            return favoriteProducts;
+        }
+        return null;
     }
 
 

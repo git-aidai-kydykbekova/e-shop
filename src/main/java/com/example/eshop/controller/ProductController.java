@@ -44,9 +44,19 @@ public class ProductController {
     public void updateById(@PathVariable Long productId, @RequestBody ProductRequest productRequest, @RequestHeader ("Authorization") String token){
         productService.updateById(productId, productRequest, token);
     }
+    @PostMapping("/favorite/{productId}")
+    public void addFavoriteProduct(@PathVariable Long productId, @RequestHeader ("Authorization") String token) {
+        productService.addFavoriteProduct(productId, token);
+    }
+    @GetMapping("/list/favorite")
+    public List<ProductResponse> favoriteProducts (@RequestHeader ("Authorization") String token) {
+        return productService.getMyFavoriteProducts(token);
+    }
+
 
     @GetMapping("/comments/{productId}")
     public List<ReviewResponse> comments(@PathVariable Long productId) {
         return productService.comments(productId);
     }
+
 }

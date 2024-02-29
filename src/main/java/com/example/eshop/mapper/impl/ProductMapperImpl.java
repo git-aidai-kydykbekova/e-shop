@@ -19,6 +19,16 @@ public class ProductMapperImpl implements ProductMapper {
         }
         return productResponses;
     }
+
+    @Override
+    public List<ProductResponse> favoriteProducts(List<Product> products) {
+        List<ProductResponse> favoriteProducts = new ArrayList<>();
+        for(Product product: products) {
+            favoriteProducts.add(toDto(product));
+        }
+        return favoriteProducts;
+    }
+
     public ProductResponse toDto(Product product) {
 
         ProductResponse productResponse = new ProductResponse();
@@ -29,7 +39,7 @@ public class ProductMapperImpl implements ProductMapper {
         productResponse.setSize(product.getSize());
         productResponse.setSKU(product.getSKU());
         productResponse.setCategory(product.getCategory().getName());
-        productResponse.setExist(product.isExist());
+       // productResponse.setExist(product.isExist());
         productResponse.setDescription(product.getDescription());
         productResponse.setColor(product.getColor());
         productResponse.setType(String.valueOf(product.getType()));

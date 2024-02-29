@@ -7,4 +7,7 @@ import java.util.List;
 
 public interface ProductMapper {
     List<ProductResponse> toDtoS(List<Product> all);
+
+    List<ProductResponse> favoriteProducts(List<Product> products);
+
 }
