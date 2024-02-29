@@ -58,4 +58,5 @@ public class ProductController {
     public List<ReviewResponse> comments(@PathVariable Long productId) {
         return productService.comments(productId);
     }
+
 }
