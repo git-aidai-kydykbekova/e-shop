@@ -1,5 +1,6 @@
 package com.example.eshop.dto.product;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -19,4 +20,5 @@ public class ProductResponse {
     private String category;
     private String type;
     private Double rating;
+
 }

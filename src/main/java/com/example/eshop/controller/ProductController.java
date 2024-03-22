@@ -74,4 +74,9 @@ public class ProductController {
     public Comparison compareproducts2(@PathVariable Long productId) {
         return productService.compareproducts2(productId);
     }
+
+    @GetMapping("/sorting")
+    public List<ProductResponse> getSortedProducts(@RequestParam String sortBy, @RequestParam String order) {
+        return productService.getSortedProducts(sortBy, order);
+    }
 }

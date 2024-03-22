@@ -21,6 +21,7 @@ import com.example.eshop.role.Type;
 import com.example.eshop.service.AuthService;
 import com.example.eshop.service.ProductService;
 import lombok.AllArgsConstructor;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
@@ -28,6 +29,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 
 @AllArgsConstructor
@@ -43,7 +45,16 @@ public class ProductServiceImpl implements ProductService {
 
 
     @Override
+    public List<ProductResponse> getSortedProducts(String sortBy, String order) {
+        Sort.Direction direction = order.equals("asc") ? Sort.Direction.ASC : Sort.Direction.DESC;
+        Sort sort = Sort.by(direction, sortBy);
+        List<Product> products = productRepository.findAll(sort);
+        return productMapper.toDtoS(products);
+    }
+
+    @Override
     public void addProduct(ProductRequest productRequest, String token) {
+        User user = authService.getUsernameFromToken(token);
         if(productRepository.findBySKU(productRequest.getSKU()).isPresent()){
             throw new NotFoundException("product with this SKU is already exist!: "+productRequest.getSKU(),
                     HttpStatus.BAD_REQUEST);

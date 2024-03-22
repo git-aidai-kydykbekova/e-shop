@@ -10,6 +10,8 @@ import com.example.eshop.entities.Product;
 import java.util.List;
 
 public interface ProductService {
+
+    List<ProductResponse> getSortedProducts(String sortBy, String order);
     void addProduct(ProductRequest productRequest, String token);
 
     List<ProductResponse> getAll(String token);
