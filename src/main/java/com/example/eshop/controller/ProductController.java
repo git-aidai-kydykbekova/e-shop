@@ -1,8 +1,10 @@
 package com.example.eshop.controller;
 
+import com.example.eshop.dto.Comparison.CompareRequest;
 import com.example.eshop.dto.Review.ReviewResponse;
 import com.example.eshop.dto.product.ProductRequest;
 import com.example.eshop.dto.product.ProductResponse;
+import com.example.eshop.entities.Comparison;
 import com.example.eshop.service.ProductService;
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.*;
@@ -53,10 +55,28 @@ public class ProductController {
         return productService.getMyFavoriteProducts(token);
     }
 
-
     @GetMapping("/comments/{productId}")
     public List<ReviewResponse> comments(@PathVariable Long productId) {
         return productService.comments(productId);
     }
 
+    @PostMapping("/information/add")
+    public void productcompare(@RequestBody CompareRequest compareRequest, @RequestHeader ("Authorization") String token) {
+        productService.productcomparison(compareRequest, token);
+    }
+
+    @GetMapping("/compare1/{productId}")
+    public Comparison compareproducts(@PathVariable Long productId) {
+        return productService.compareproducts(productId);
+    }
+
+    @GetMapping("/compare2/{productId}")
+    public Comparison compareproducts2(@PathVariable Long productId) {
+        return productService.compareproducts2(productId);
+    }
+
+    @GetMapping("/sorting")
+    public List<ProductResponse> getSortedProducts(@RequestParam String sortBy, @RequestParam String order) {
+        return productService.getSortedProducts(sortBy, order);
+    }
 }

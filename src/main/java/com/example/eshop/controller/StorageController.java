@@ -34,6 +34,4 @@ public class StorageController {
         storageService.deleteFile(fileName);
         return "Image deleted successfully!";
     }
-
-
 }

@@ -39,7 +39,7 @@ public class AuthServiceImpl implements AuthService {
             throw new BadCredentialsException("user with email: "+userRegisterRequest.getEmail()+" is already exist!");
         }
         User user = new User();
-        user.setRole(Role.Customer);
+        user.setRole(Role.Admin);
         user.setEmail(userRegisterRequest.getEmail());
         user.setPassword(passwordEncoder.encode(userRegisterRequest.getPassword()));
 

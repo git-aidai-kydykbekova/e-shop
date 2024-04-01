@@ -39,4 +39,6 @@ public class Product {
     @OneToMany()
     private List<Review> productReview;
 
+    @OneToOne(mappedBy = "product", cascade = CascadeType.ALL)
+    private Comparison comparison;
 }
