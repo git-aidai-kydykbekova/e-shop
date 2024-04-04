@@ -24,5 +24,7 @@ public class Customer {
     private List<Product> products;
     @ManyToMany
     private List<Product> favoriteProducts;
+    @OneToMany
+    private List<Checkout> checkouts;
 
 }
