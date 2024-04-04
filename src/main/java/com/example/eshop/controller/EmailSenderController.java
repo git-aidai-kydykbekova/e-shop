@@ -1,7 +1,7 @@
 package com.example.eshop.controller;
 
+import com.example.eshop.dto.EmailRequest;
 import com.example.eshop.dto.checkout.CheckoutRequest;
-import com.example.eshop.dto.checkout.CheckoutResponse;
 import com.example.eshop.entities.EmailMessage;
 import com.example.eshop.service.CheckoutService;
 import com.example.eshop.service.emailSender.EmailSenderService;
@@ -23,7 +23,7 @@ public class EmailSenderController {
 
     @PostMapping("/email/send")
     public ResponseEntity sendEmail(@RequestBody EmailMessage emailMessage) {
-        this.emailSenderService.sendEmail(emailMessage.getTo(), emailMessage.getSubject(), emailMessage.getMessage());
+        emailSenderService.sendEmail(emailMessage.getTo(), emailMessage.getSubject(), emailMessage.getMessage());
         return ResponseEntity.ok("Success");
     }
 
@@ -31,4 +31,9 @@ public class EmailSenderController {
     public void checkout(@RequestBody CheckoutRequest checkoutRequest, @RequestHeader("Authorization") String token ) {
         checkoutService.checkout(checkoutRequest, token);
     }
+//    @PostMapping()
+//    public String code(@RequestHeader("Authorization") String token, @RequestBody EmailRequest request){
+//        emailSenderService.sendEmail(token, request);
+//        return "We have sent a code to your email!";
+//    }
 }

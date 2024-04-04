@@ -19,7 +19,7 @@ public class SecurityConfig {
         http.csrf(CsrfConfigurer::disable)
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/auth/**", "/v3/api-docs/**", "/swagger-ui/**").permitAll()
-                        .requestMatchers("/furniture/add/**","/email/send","/category/add/**", "/category/list","/furniture/user/busket","/furniture/**", "/furniture/update/{productId}", "/furniture/buy/{productId}", "/review/add/{productId}/**","/checkout", "/furniture/myproducts", "/furniture/information/add/**").permitAll()
+                        .requestMatchers("/furniture/add/**","/email/**","/category/add/**", "/category/list","/furniture/user/busket","/furniture/**", "/furniture/update/{productId}", "/furniture/buy/{productId}", "/review/add/{productId}/**","/checkout", "/furniture/myproducts", "/furniture/information/add/**").permitAll()
 
                 )               ;
         return http.build();
