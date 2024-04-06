@@ -21,7 +21,7 @@ public class Checkout {
     public Integer zipCode;
     public Long number;
     public String email;
-    private boolean verifyOrder = false;
+   // private boolean verifyOrder = false;
     @ManyToOne
     private Customer customer;
 }
