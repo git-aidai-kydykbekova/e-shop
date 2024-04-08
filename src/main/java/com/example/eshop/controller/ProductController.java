@@ -84,11 +84,15 @@ public class ProductController {
     public ResponseEntity<CompareResponse> compare1(@PathVariable("productId")Long productId){
         return new ResponseEntity<>(comparisonMapper.modelTODto(comparisonRepository.findById(productId).get()), HttpStatus.OK);
     }
-
-    @GetMapping("/compare2/{productId}") //надо сделать так как выше
-    public Comparison compareproducts2(@PathVariable Long productId) {
-        return productService.compareproducts2(productId);
+    @GetMapping("/compare2/{productId}")
+    public ResponseEntity<CompareResponse> compare2(@PathVariable("productId")Long productId){
+        return new ResponseEntity<>(comparisonMapper.modelTODto(comparisonRepository.findById(productId).get()), HttpStatus.OK);
     }
+
+//    @GetMapping("/compare2/{productId}") //надо сделать так как выше
+//    public Comparison compareproducts2(@PathVariable Long productId) {
+//        return productService.compareproducts2(productId);
+//    }
 
     @GetMapping("/sorting")
     public List<ProductResponse> getSortedProducts(@RequestParam String sortBy, @RequestParam String order) {
