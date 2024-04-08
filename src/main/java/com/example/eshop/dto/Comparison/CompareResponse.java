@@ -6,6 +6,7 @@ import lombok.Setter;
 @Getter
 @Setter
 public class CompareResponse {
+    private Long id;
 
     private String sales_package;
     private String model_number;
