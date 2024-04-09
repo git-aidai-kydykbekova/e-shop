@@ -29,7 +29,6 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 
 @AllArgsConstructor
@@ -98,7 +97,7 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public List<ReviewResponse> comments(Long productId) {
         Optional<Product> product = productRepository.findById(productId);
-        List<ReviewResponse> reviewResponses = reviewMapper.toDtoS(product.get().getProductReview());
+        List<ReviewResponse> reviewResponses = reviewMapper.toDtoS(product.get().getReviews());
         return reviewResponses;
     }
 
