@@ -4,6 +4,8 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.time.LocalDateTime;
+
 @Getter
 @Setter
 @Entity
@@ -21,7 +23,11 @@ public class Checkout {
     public Integer zipCode;
     public Long number;
     public String email;
-   // private boolean verifyOrder = false;
+    private String code;
+    @Column(name = "verification")
+    private boolean isVerify;
+    private LocalDateTime codeGeneratedTime;
+
     @ManyToOne
     private Customer customer;
 }

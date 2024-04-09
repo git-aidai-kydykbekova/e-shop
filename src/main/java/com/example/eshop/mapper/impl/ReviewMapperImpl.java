@@ -7,6 +7,7 @@ import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Component
 public class ReviewMapperImpl implements ReviewMapper {
@@ -25,7 +26,6 @@ public class ReviewMapperImpl implements ReviewMapper {
         ReviewResponse reviewResponse = new ReviewResponse();
 
         reviewResponse.setComment(review.getComment());
-
         return reviewResponse;
     }
 }

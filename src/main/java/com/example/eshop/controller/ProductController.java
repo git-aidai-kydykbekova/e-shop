@@ -5,12 +5,10 @@ import com.example.eshop.dto.Comparison.CompareResponse;
 import com.example.eshop.dto.Review.ReviewResponse;
 import com.example.eshop.dto.product.ProductRequest;
 import com.example.eshop.dto.product.ProductResponse;
-import com.example.eshop.entities.Comparison;
 import com.example.eshop.mapper.ComparisonMapper;
 import com.example.eshop.repository.ComparisonRepository;
 import com.example.eshop.service.ProductService;
 import lombok.AllArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -22,9 +20,7 @@ import java.util.List;
 @RequestMapping("/furniture")
 public class ProductController {
     private ProductService productService;
-    @Autowired
     private ComparisonMapper comparisonMapper;
-    @Autowired
     private ComparisonRepository comparisonRepository;
 
     @PostMapping("/add")
@@ -37,7 +33,7 @@ public class ProductController {
         return productService.getAll(token);
     }
 
-    @GetMapping("/myproducts")
+    @GetMapping("/myProducts")
     public List<ProductResponse> getMyProducts(@RequestHeader ("Authorization") String token){
         return productService.getMyProducts(token);
     }
@@ -75,11 +71,6 @@ public class ProductController {
     public void productcompare(@RequestBody CompareRequest compareRequest, @RequestHeader ("Authorization") String token) {
         productService.productcomparison(compareRequest, token);
     }
-
-//    @GetMapping("/compare1/{productId}")
-//    public Comparison compareproducts(@PathVariable Long productId) {
-//        return productService.compareproducts(productId);
-//    }
     @GetMapping("/compare1/{productId}")
     public ResponseEntity<CompareResponse> compare1(@PathVariable("productId")Long productId){
         return new ResponseEntity<>(comparisonMapper.modelTODto(comparisonRepository.findById(productId).get()), HttpStatus.OK);
@@ -88,11 +79,6 @@ public class ProductController {
     public ResponseEntity<CompareResponse> compare2(@PathVariable("productId")Long productId){
         return new ResponseEntity<>(comparisonMapper.modelTODto(comparisonRepository.findById(productId).get()), HttpStatus.OK);
     }
-
-//    @GetMapping("/compare2/{productId}") //надо сделать так как выше
-//    public Comparison compareproducts2(@PathVariable Long productId) {
-//        return productService.compareproducts2(productId);
-//    }
 
     @GetMapping("/sorting")
     public List<ProductResponse> getSortedProducts(@RequestParam String sortBy, @RequestParam String order) {

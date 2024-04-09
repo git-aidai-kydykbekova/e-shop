@@ -8,4 +8,5 @@ import java.util.List;
 public interface ReviewMapper {
 
     List<ReviewResponse> toDtoS(List<Review> all);
+
 }

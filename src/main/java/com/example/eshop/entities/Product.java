@@ -36,8 +36,8 @@ public class Product {
     @ManyToMany()
     private List<Customer> customer;
 
-    @OneToMany()
-    private List<Review> productReview;
+    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL)
+    private List<Review> reviews;
 
     @OneToOne(mappedBy = "product", cascade = CascadeType.ALL)
     private Comparison comparison;

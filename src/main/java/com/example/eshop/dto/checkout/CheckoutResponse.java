@@ -18,4 +18,5 @@ public class CheckoutResponse {
     public Integer zipCode;
     public Long number;
     public String email;
+
 }

@@ -3,24 +3,39 @@ import com.example.eshop.dto.checkout.CheckoutRequest;
 import com.example.eshop.entities.Checkout;
 import com.example.eshop.entities.User;
 import com.example.eshop.repository.CheckoutRepository;
+import com.example.eshop.repository.UserRepository;
 import com.example.eshop.service.AuthService;
 import com.example.eshop.service.CheckoutService;
+import com.example.eshop.service.emailSender.EmailSenderService;
+import jakarta.mail.MessagingException;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
+import java.time.Duration;
+import java.time.LocalDateTime;
+import java.util.Optional;
 
 @Service
 @AllArgsConstructor
 public class CheckoutServiceImpl implements CheckoutService {
     private final AuthService authService;
     private final CheckoutRepository checkoutRepository;
+    private final EmailSenderService emailSenderService;
+    private final UserRepository userRepository;
+
 
 
 
     @Override
     public void checkout(CheckoutRequest checkoutRequest, String token) {
-        User user = authService.getUsernameFromToken(token);
+
+        String code = emailSenderService.generateCode();
+
+        try {
+            emailSenderService.sendCodeToEmail(checkoutRequest.getEmail(), code);
+        } catch (MessagingException e) {
+            throw new RuntimeException("Unable to send code, please try again");
+        }
         Checkout checkout = new Checkout();
         checkout.setCity(checkoutRequest.getCity());
         checkout.setEmail(checkoutRequest.getEmail());
@@ -31,15 +46,29 @@ public class CheckoutServiceImpl implements CheckoutService {
         checkout.setZipCode(checkoutRequest.getZipCode());
         checkout.setFirstName(checkoutRequest.getFirstName());
         checkout.setCompanyName(checkoutRequest.getCompanyName());
+        checkout.setCode(code);
+        checkout.setCodeGeneratedTime(LocalDateTime.now());
 
+
+        //userRepository.save(user);
         checkoutRepository.save(checkout);
 
+    }
 
-//        List<ProductResponse> products = productService.getMyProducts(token);
-//        System.out.println(products);
-//        String cart =  products.toString();
-//        emailSenderService.sendEmail(email,"VERIFY",cart);
+    @Override
+    public String verifyCode(String email, String code) {
+        Checkout checkout = new Checkout();
+        Optional <User> user = userRepository.findByEmail(email);
+        if(user.isEmpty()) {
+            throw new RuntimeException("User is not founded " + email);
+        }
+        if(checkout.getCode().equals(code) && Duration.between(checkout.getCodeGeneratedTime(),
+                LocalDateTime.now()).getSeconds() < (10 * 60)) {
+            checkout.setVerify(true);
+            checkoutRepository.save(checkout);
+            return "code is verified";
+        }
 
-       // emailSenderService.sendEmail(token,request);
+        return "Please regenerate code and try  again";
     }
 }

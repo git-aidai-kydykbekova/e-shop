@@ -5,6 +5,8 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.time.LocalDateTime;
+
 
 @Getter
 @Setter
@@ -18,8 +20,8 @@ public class EmailMessage {
     private String to;
     private String subject;
     private String message;
-
-    @JsonProperty("isRead")
-    private boolean isRead = false;
+//    private Integer code;
+//    private boolean isVerify = false;
+//    private LocalDateTime codeGeneratedTime;
 
 }
