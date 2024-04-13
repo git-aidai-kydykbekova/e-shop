@@ -1,6 +1,7 @@
 package com.example.eshop.service;
 
 import com.example.eshop.dto.image.ImageResponse;
+import com.example.eshop.entities.Image;
 import org.springframework.web.multipart.MultipartFile;
 
 public interface StorageService {
@@ -13,4 +14,6 @@ public interface StorageService {
     void deleteFile(String fileName);
 
     ImageResponse getById(Long id);
+
+    Image uploadFile(MultipartFile file, Image image);
 }

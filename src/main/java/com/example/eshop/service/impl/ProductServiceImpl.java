@@ -267,7 +267,7 @@ public class ProductServiceImpl implements ProductService {
             Image image = product.getImage();
 //            items = image.getItems();
 //            orders = image.getOrders();
-             // save = storageService.uploadFile(file, image);
+              save = storageService.uploadFile(file, image);
         }
 //        if(items != null){
 //            List<CartItem> itemList = new ArrayList<>();
@@ -287,12 +287,12 @@ public class ProductServiceImpl implements ProductService {
 //            }
 //            save.setOrders(orderList);
 //        }
-//    } else save = imageService.uploadFile(file);
+  // } else save = imageService.uploadFile(file);
 
-//        product.setImage(save);
-//        productRepository.save(product);
-//        save.setProduct(product);
-//        imageRepository.save(save);
+  //         product.setImage(save);
+        productRepository.save(product);
+  //      save.setProduct(product);
+   //     imageRepository.save(save);
 
 
 
