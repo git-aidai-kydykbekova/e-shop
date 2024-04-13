@@ -2,6 +2,7 @@ package com.example.eshop.entities;
 
 import com.example.eshop.role.Type;
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -41,4 +42,7 @@ public class Product {
 
     @OneToOne(mappedBy = "product", cascade = CascadeType.ALL)
     private Comparison comparison;
+
+    @OneToOne(mappedBy = "product", cascade = CascadeType.ALL)
+    private Image image;
 }

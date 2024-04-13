@@ -4,11 +4,14 @@ import com.example.eshop.dto.Review.ReviewRequest;
 import com.example.eshop.dto.Review.ReviewResponse;
 import com.example.eshop.entities.Product;
 import com.example.eshop.entities.Review;
+import com.example.eshop.entities.User;
 import com.example.eshop.exception.NotFoundException;
 import com.example.eshop.mapper.ReviewMapper;
 import com.example.eshop.repository.ProductRepository;
 import com.example.eshop.repository.ReviewRepository;
 
+import com.example.eshop.role.Role;
+import com.example.eshop.service.AuthService;
 import com.example.eshop.service.ProductService;
 import com.example.eshop.service.ReviewService;
 import lombok.AllArgsConstructor;
@@ -25,6 +28,7 @@ public class ReviewServiceImpl implements ReviewService {
     private final ProductRepository productRepository;
     private final ProductService productService;
     private final ReviewMapper reviewMapper;
+    private final AuthService authService;
 
     @Override
     public void addReview(ReviewRequest reviewRequest, String token, Long productId) {
@@ -69,7 +73,6 @@ public class ReviewServiceImpl implements ReviewService {
             throw new NotFoundException("Product with Id " + productId + " is not found", HttpStatus.BAD_REQUEST);
         }
     }
-
     @Override
     public List<ReviewResponse> getReviews(Long productId) {
         Product product = productService.getProductById(productId);
@@ -79,5 +82,18 @@ public class ReviewServiceImpl implements ReviewService {
         List<ReviewResponse> reviewResponses = reviewMapper.toDtoS(product.getReviews());
         return  reviewResponses;
     }
+
+    @Override
+    public void deleteReview(Long id, String token) {
+        User user = authService.getUsernameFromToken(token);
+
+        if(user.getRole().equals(Role.Admin)) {
+            reviewRepository.deleteById(id);
+        }
+        else
+            throw new NotFoundException("This function is available only for ADMIN", HttpStatus.BAD_REQUEST);
+
+    }
+
 
 }

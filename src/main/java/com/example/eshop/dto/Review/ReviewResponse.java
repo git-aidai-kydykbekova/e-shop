@@ -7,5 +7,6 @@ import lombok.Setter;
 @Setter
 public class ReviewResponse {
 
-    String comment;
+    private String comment;
+    private double rating;
 }

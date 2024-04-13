@@ -13,15 +13,14 @@ import org.springframework.stereotype.Service;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
-import java.util.Optional;
 
 @Service
 @AllArgsConstructor
 public class CheckoutServiceImpl implements CheckoutService {
-    private final AuthService authService;
+
     private final CheckoutRepository checkoutRepository;
     private final EmailSenderService emailSenderService;
-    private final UserRepository userRepository;
+    private final AuthService authService;
 
 
 
@@ -49,19 +48,21 @@ public class CheckoutServiceImpl implements CheckoutService {
         checkout.setCode(code);
         checkout.setCodeGeneratedTime(LocalDateTime.now());
 
-
-        //userRepository.save(user);
         checkoutRepository.save(checkout);
 
     }
 
     @Override
-    public String verifyCode(String email, String code) {
+    public String verifyCode(String code, String token) {
         Checkout checkout = new Checkout();
-        Optional <User> user = userRepository.findByEmail(email);
-        if(user.isEmpty()) {
-            throw new RuntimeException("User is not founded " + email);
-        }
+        String email = authService.getUsernameFromToken(token).getCustomer().getUser().getEmail();
+        //String email = user.getEmail();
+
+        // email = checkoutRequest.getEmail();// problem
+//        Optional <User> user1 = userRepository.findByEmail(email);
+//        if(user1.isEmpty()) {
+//            throw new NotFoundException("User is not founded " + email, HttpStatus.BAD_REQUEST);
+//        }
         if(checkout.getCode().equals(code) && Duration.between(checkout.getCodeGeneratedTime(),
                 LocalDateTime.now()).getSeconds() < (10 * 60)) {
             checkout.setVerify(true);

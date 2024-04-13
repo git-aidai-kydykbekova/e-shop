@@ -4,26 +4,22 @@ import com.example.eshop.dto.Comparison.CompareRequest;
 import com.example.eshop.dto.Review.ReviewResponse;
 import com.example.eshop.dto.product.ProductRequest;
 import com.example.eshop.dto.product.ProductResponse;
-import com.example.eshop.entities.Category;
-import com.example.eshop.entities.Comparison;
-import com.example.eshop.entities.Product;
-import com.example.eshop.entities.User;
+import com.example.eshop.entities.*;
 import com.example.eshop.exception.BadRequestException;
 import com.example.eshop.exception.NotFoundException;
 import com.example.eshop.mapper.ProductMapper;
 import com.example.eshop.mapper.ReviewMapper;
-import com.example.eshop.repository.CategoryRepository;
-import com.example.eshop.repository.ComparisonRepository;
-import com.example.eshop.repository.ProductRepository;
-import com.example.eshop.repository.UserRepository;
+import com.example.eshop.repository.*;
 import com.example.eshop.role.Role;
 import com.example.eshop.role.Type;
 import com.example.eshop.service.AuthService;
 import com.example.eshop.service.ProductService;
+import com.example.eshop.service.StorageService;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -41,6 +37,9 @@ public class ProductServiceImpl implements ProductService {
     private final UserRepository userRepository;
     private final ReviewMapper reviewMapper;
     private final ComparisonRepository comparisonRepository;
+    private final StorageService storageService;
+    private final ImageRepository imageRepository;
+
 
 
     @Override
@@ -138,8 +137,6 @@ public class ProductServiceImpl implements ProductService {
         if(user.getRole().equals(Role.Admin)) {
             productRepository.deleteById(productId);
         }
-        else
-            throw new NotFoundException("This function is available only for ADMIN", HttpStatus.BAD_REQUEST);
 
     }
 
@@ -252,6 +249,53 @@ public class ProductServiceImpl implements ProductService {
             throw new NotFoundException("Product not found", HttpStatus.BAD_GATEWAY);
         }
         return product.get().getComparison();
+    }
+
+    @Override
+    public void uploadFile(String token, MultipartFile file, Long productId) {
+        User user = authService.getUsernameFromToken(token);
+        Product product = productRepository.findById(productId).orElseThrow(() ->
+                new NotFoundException("product not found!" + productId, HttpStatus.NOT_FOUND));
+
+        if(user != product.getCustomer()) {
+            throw new BadRequestException("You can't edit this product!");
+        }
+          Image save;
+//        List<Order> orders = null;
+//        List<CartItem> items = null;
+        if(product.getImage() != null) {
+            Image image = product.getImage();
+//            items = image.getItems();
+//            orders = image.getOrders();
+             // save = storageService.uploadFile(file, image);
+        }
+//        if(items != null){
+//            List<CartItem> itemList = new ArrayList<>();
+//            for(CartItem item: items){
+//                item.setImage(save);
+//                itemList.add(item);
+//                cartItemRepository.save(item);
+//            }
+//            save.setItems(itemList);
+//        }
+//        if(orders != null){
+//            List<Order> orderList = new ArrayList<>();
+//            for(Order order: orders){
+//                order.setImage(save);
+//                orderList.add(order);
+//                orderRepository.save(order);
+//            }
+//            save.setOrders(orderList);
+//        }
+//    } else save = imageService.uploadFile(file);
+
+//        product.setImage(save);
+//        productRepository.save(product);
+//        save.setProduct(product);
+//        imageRepository.save(save);
+
+
+
     }
 
 

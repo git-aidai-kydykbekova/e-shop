@@ -6,6 +6,7 @@ import com.example.eshop.dto.product.ProductRequest;
 import com.example.eshop.dto.product.ProductResponse;
 import com.example.eshop.entities.Comparison;
 import com.example.eshop.entities.Product;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -37,4 +38,6 @@ public interface ProductService {
     Comparison compareproducts(Long productId);
 
     Comparison compareproducts2(Long productId);
+
+    void uploadFile(String token, MultipartFile file, Long productId);
 }

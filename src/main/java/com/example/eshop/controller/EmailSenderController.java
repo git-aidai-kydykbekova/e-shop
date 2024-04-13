@@ -28,8 +28,8 @@ public class EmailSenderController {
         checkoutService.checkout(checkoutRequest, token);
     }
     @PutMapping("/verify-order")
-    public ResponseEntity<String> verifyOrder(@RequestParam String email, @RequestParam String code) {
-        return new ResponseEntity<>(checkoutService.verifyCode(email, code),HttpStatus.OK);
+    public ResponseEntity<String> verifyOrder( @RequestParam String code,@RequestHeader ("Authorization") String token) {
+        return new ResponseEntity<>(checkoutService.verifyCode( code, token),HttpStatus.OK);
     }
 
 }
