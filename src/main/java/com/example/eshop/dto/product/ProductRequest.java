@@ -1,7 +1,10 @@
 package com.example.eshop.dto.product;
 
+import com.example.eshop.role.Tag;
 import lombok.Getter;
 import lombok.Setter;
+
+import java.util.List;
 
 @Getter
 @Setter
@@ -16,4 +19,5 @@ public class ProductRequest {
     private String category;
     private String type;
     private Double rating;
+    private List<Tag> tags;
 }

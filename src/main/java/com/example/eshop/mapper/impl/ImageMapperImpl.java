@@ -19,4 +19,15 @@ public class ImageMapperImpl implements ImageMapper {
 
         return imageResponse;
     }
+
+    @Override
+    public ImageResponse toDetailDto(Image image) {
+        ImageResponse response = new ImageResponse();
+        response.setId(image.getId());
+        response.setPath(image.getPath());
+        response.setName(image.getName());
+        response.setProductId(image.getProduct().getId());
+        return response;
+
+    }
 }

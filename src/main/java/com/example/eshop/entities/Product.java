@@ -1,5 +1,6 @@
 package com.example.eshop.entities;
 
+import com.example.eshop.role.Tag;
 import com.example.eshop.role.Type;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -26,7 +27,7 @@ public class Product {
     private Integer price;
     private String date;
     private boolean isExist = true;
-//    @Enumerated(EnumType.STRING)
+
     private Type type;
     private Double rating;
     private Integer totalreview;
@@ -45,4 +46,9 @@ public class Product {
 
     @OneToOne(mappedBy = "product", cascade = CascadeType.ALL)
     private Image image;
+
+    @ElementCollection(targetClass = Tag.class, fetch = FetchType.EAGER)
+    @CollectionTable(name = "product_tags", joinColumns = @JoinColumn(name = "product_id"))
+    @Enumerated(EnumType.STRING)
+    private List<Tag> tags;
 }

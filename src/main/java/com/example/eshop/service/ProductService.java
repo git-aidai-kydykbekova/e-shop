@@ -1,5 +1,6 @@
 package com.example.eshop.service;
 
+import com.example.eshop.dto.AddToCartRequest;
 import com.example.eshop.dto.Comparison.CompareRequest;
 import com.example.eshop.dto.Review.ReviewResponse;
 import com.example.eshop.dto.product.ProductRequest;
@@ -40,4 +41,9 @@ public interface ProductService {
     Comparison compareproducts2(Long productId);
 
     void uploadFile(String token, MultipartFile file, Long productId);
+
+    void deleteFavoriteProduct(Long productId, String token);
+
+    void add(AddToCartRequest
+            request, String token);
 }

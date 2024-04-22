@@ -5,4 +5,6 @@ import com.example.eshop.entities.Image;
 
 public interface ImageMapper {
     ImageResponse toDto(Image image);
+
+    ImageResponse toDetailDto(Image image);
 }

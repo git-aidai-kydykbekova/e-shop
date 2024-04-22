@@ -27,35 +27,21 @@ public class ProductController {
     public void add(@RequestBody ProductRequest productRequest, @RequestHeader("Authorization") String token) {
         productService.addProduct(productRequest, token);
     }
-
     @GetMapping("/list")
     public List<ProductResponse> productResponses(@RequestHeader ("Authorization") String token) {
         return productService.getAll(token);
     }
-
     @GetMapping("/myProducts")
     public List<ProductResponse> getMyProducts(@RequestHeader ("Authorization") String token){
         return productService.getMyProducts(token);
     }
-    @PostMapping("/buy/{productId}")
-    public void buyProduct(@PathVariable Long productId,@RequestHeader ("Authorization") String token) {
-        productService.buyProduct(productId, token);
-    }
-    @GetMapping("/user/basket")
-    public List<ProductResponse> userBasket(@RequestHeader ("Authorization") String token) {
-        return productService.getMyProducts(token);
-    }
-    @DeleteMapping("/delete/{productId}")
-    public void delete(@PathVariable Long productId,@RequestHeader("Authorization") String token) {
-        productService.deleteProduct(productId, token);
-    }
-    @PutMapping("/update/{productId}")
-    public void updateById(@PathVariable Long productId, @RequestBody ProductRequest productRequest, @RequestHeader ("Authorization") String token){
-        productService.updateById(productId, productRequest, token);
-    }
     @PostMapping("/favorite/{productId}")
     public void addFavoriteProduct(@PathVariable Long productId, @RequestHeader ("Authorization") String token) {
         productService.addFavoriteProduct(productId, token);
+    }
+    @DeleteMapping("/delete/favorite/{productId}")
+    public void deleteFavorite(@PathVariable Long productId,@RequestHeader("Authorization") String token) {
+        productService.deleteFavoriteProduct(productId, token);
     }
     @GetMapping("/list/favorite")
     public List<ProductResponse> favoriteProducts (@RequestHeader ("Authorization") String token) {
@@ -83,5 +69,21 @@ public class ProductController {
     @GetMapping("/sorting")
     public List<ProductResponse> getSortedProducts(@RequestParam String sortBy, @RequestParam String order) {
         return productService.getSortedProducts(sortBy, order);
+    }
+    @PostMapping("/buy/{productId}")
+    public void buyProduct(@PathVariable Long productId, @RequestHeader("Authorization") String token) {
+        productService.buyProduct(productId, token);
+    }
+    @GetMapping("/user/basket")
+    public List<ProductResponse> userBasket(@RequestHeader ("Authorization") String token) {
+        return productService.getMyProducts(token);
+    }
+    @DeleteMapping("/delete/{productId}")
+    public void delete(@PathVariable Long productId,@RequestHeader("Authorization") String token) {
+        productService.deleteProduct(productId, token);
+    }
+    @PutMapping("/update/{productId}")
+    public void updateById(@PathVariable Long productId, @RequestBody ProductRequest productRequest, @RequestHeader ("Authorization") String token){
+        productService.updateById(productId, productRequest, token);
     }
 }

@@ -9,24 +9,15 @@ import java.util.List;
 @Setter
 @Getter
 @Entity
-@Table
-public class Image {
-
+@Table(name = "table_cart")
+public class Cart {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
-    private String name;
-    private String path;
-
     @OneToOne
-    private Product product;
+    private User user;
 
     @OneToMany
     private List<CartItem> items;
-
-    @OneToMany
-    private List<Order> orders;
-
 
 }

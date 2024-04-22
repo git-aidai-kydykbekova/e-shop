@@ -56,6 +56,10 @@ public class StorageServiceImpl implements StorageService {
         return "File uploaded " + fileName;
     }
 
+//    public Image uploadFile(MultipartFile file)  {
+//        return save(file);
+//    }
+
     public byte[] downloadFile(String filename) {
         S3Object s3Object = s3Client.getObject(bucketName,filename);
         S3ObjectInputStream inputStream = s3Object.getObjectContent();

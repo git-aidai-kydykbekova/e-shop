@@ -27,9 +27,10 @@ public class EmailSenderController {
     public void checkout(@RequestBody CheckoutRequest checkoutRequest, @RequestHeader("Authorization") String token) {
         checkoutService.checkout(checkoutRequest, token);
     }
-    @PutMapping("/verify-order")
-    public ResponseEntity<String> verifyOrder( @RequestParam String code,@RequestHeader ("Authorization") String token) {
-        return new ResponseEntity<>(checkoutService.verifyCode( code, token),HttpStatus.OK);
+    @PostMapping("/verify-order/{checkId}")
+    public String verifyOrder( @RequestParam Long code,@RequestHeader ("Authorization") String token, @PathVariable Long checkId) {
+        checkoutService.verifyCode(checkId,token, code);
+        return "Your email is linked";
     }
 
 }
