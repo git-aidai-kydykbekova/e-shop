@@ -22,7 +22,7 @@ public class Order {
     private String sku;
 
     @ManyToOne
-    private User user;
+    private Customer customer;
 
     @ManyToOne(cascade = CascadeType.ALL)
     private Image image;

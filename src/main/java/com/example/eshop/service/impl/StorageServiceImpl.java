@@ -6,9 +6,11 @@ import com.amazonaws.services.s3.model.S3Object;
 import com.amazonaws.services.s3.model.S3ObjectInputStream;
 import com.amazonaws.util.IOUtils;
 import com.example.eshop.dto.image.ImageResponse;
+import com.example.eshop.entities.CartItem;
 import com.example.eshop.entities.Image;
 import com.example.eshop.exception.NotFoundException;
 import com.example.eshop.mapper.ImageMapper;
+import com.example.eshop.repository.CartItemRepository;
 import com.example.eshop.repository.ImageRepository;
 import com.example.eshop.service.StorageService;
 import jakarta.transaction.Transactional;
@@ -31,6 +33,7 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.Random;
 
+
 @Service
 @Slf4j
 @RequiredArgsConstructor
@@ -38,90 +41,28 @@ public class StorageServiceImpl implements StorageService {
 
     @Value("${application.bucket.name}")
     private String bucketName;
-
     @Value("${location.path}")
     private String PATH;
-
     @Autowired
     private AmazonS3 s3Client;
 
     private final ImageRepository imageRepository;
     private final ImageMapper imageMapper;
-
-    public String uploadFile(MultipartFile file) {
-        File fileObj = convertMultiPartFileToFile(file);
-        String fileName = System.currentTimeMillis()+"_" + file.getOriginalFilename();
-        s3Client.putObject(new PutObjectRequest(bucketName,fileName,fileObj));
-        fileObj.delete();
-        return "File uploaded " + fileName;
-    }
-
-//    public Image uploadFile(MultipartFile file)  {
-//        return save(file);
-//    }
-
-    public byte[] downloadFile(String filename) {
-        S3Object s3Object = s3Client.getObject(bucketName,filename);
-        S3ObjectInputStream inputStream = s3Object.getObjectContent();
-        try {
-            byte[] content = IOUtils.toByteArray(inputStream);
-            return content;
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return null;
-    }
-
-    public void deleteFile(String filename) {
-        s3Client.deleteObject(bucketName,filename);
-        System.out.println("removed" + filename);
-    }
+//    private final OrderHistoryRepository orderRepository;
+    private final CartItemRepository cartItemRepository;
 
     @Override
-    public ImageResponse getById(Long id) {
-        Optional<Image> image = imageRepository.findById(id);
-        if(image.isEmpty()){
-            throw new NotFoundException("Image not found!", HttpStatus.NOT_FOUND);
-        }
-
-        return imageMapper.toDto(image.get());
-    }
-
     @Transactional
-    @Override
-    public Image uploadFile(MultipartFile file, Image oldDocument) {
+    public Image uploadFile(MultipartFile file, Image oldDocument)  {
         if (oldDocument != null) {
             deleteFile(oldDocument.getId());
         }
         return save(file);
     }
 
-    private void deleteFile(Long id) {
-        Optional<Image> image = imageRepository.findById(id);
-//        System.out.println(image);
-        if(image.isEmpty())
-            throw new NotFoundException("This image not found!", HttpStatus.NOT_FOUND);
-        if(image.get().getProduct() != null){
-            image.get().getProduct().setImage(null);
-            image.get().setProduct(null);
-        }
-//        if(image.get().getItems() != null){
-//            for(CartItem item: image.get().getItems()){
-//                item.setImage(null);
-//                cartItemRepository.save(item);
-//            }
-//            image.get().setItems(null);
-//        }
-//        if(image.get().getOrders() != null){
-//            for(Order order : image.get().getOrders()) {
-//                order.setImage(null);
-//                orderRepository.save(order);
-//            }
-//            image.get().setOrders(null);
-        //}
-        imageRepository.delete(image.get());
-//        s3Client.deleteObject(bucketName, fileName);
-//        return fileName + " removed ...";
+    @Override
+    public Image uploadFile(MultipartFile file)  {
+        return save(file);
     }
 
     private Image save( MultipartFile file) {
@@ -177,14 +118,71 @@ public class StorageServiceImpl implements StorageService {
     }
 
 
+    @Override
+    public void uploadFileToS3Bucket(MultipartFile file){
+        File fileObj = convertMultiPartFileToFile(file);
+        String fileName = System.currentTimeMillis() + "_" + file.getOriginalFilename();
+        s3Client.putObject(new PutObjectRequest(bucketName, fileName, fileObj));
+        fileObj.delete();
+    }
+
+    @Override
+    public byte[] downloadFile(String fileName) {
+        S3Object s3Object = s3Client.getObject(bucketName, fileName);
+        S3ObjectInputStream inputStream = s3Object.getObjectContent();
+        try {
+            byte[] content = IOUtils.toByteArray(inputStream);
+            return content;
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    @Override
+    public void deleteFile(Long id) {
+        var image = imageRepository.findById(id);
+//        System.out.println(image);
+        if(image.isEmpty())
+            throw new NotFoundException("This image not found!", HttpStatus.NOT_FOUND);
+        if(image.get().getProduct() != null){
+            image.get().getProduct().setImage(null);
+            image.get().setProduct(null);
+        }
+        if(image.get().getItems() != null){
+            for(CartItem item: image.get().getItems()){
+                item.setImage(null);
+                cartItemRepository.save(item);
+            }
+            image.get().setItems(null);
+        }
+//        if(image.get().getOrders() != null){
+//            for(OrderHistory orderHistory : image.get().getOrders()) {
+//                orderHistory.setImage(null);
+//                orderRepository.save(orderHistory);
+//            }
+//            image.get().setOrders(null);
+//        }
+        imageRepository.delete(image.get());
+//        s3Client.deleteObject(bucketName, fileName);
+//        return fileName + " removed ...";
+    }
+
+    @Override
+    public ImageResponse getById(Long id) {
+        Optional<Image> image = imageRepository.findById(id);
+        if(image.isEmpty())
+            throw new NotFoundException("Image not found!", HttpStatus.NOT_FOUND);
+        return imageMapper.toDto(image.get());
+    }
+
     private File convertMultiPartFileToFile(MultipartFile file) {
         File convertedFile = new File(file.getOriginalFilename());
         try (FileOutputStream fos = new FileOutputStream(convertedFile)) {
             fos.write(file.getBytes());
-        } catch (IOException e ) {
-            log.error("Error converting multipart file", e);
+        } catch (IOException e) {
+            log.error("Error converting multipartFile to file", e);
         }
         return convertedFile;
     }
 }
-

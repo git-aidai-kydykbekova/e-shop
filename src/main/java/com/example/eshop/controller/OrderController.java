@@ -14,20 +14,20 @@ import java.util.List;
 public class OrderController {
     private final OrderService orderService;
 
-    @GetMapping("/all")
-    public List<OrderResponse> all(@RequestHeader("Authorization") String token){
-        return orderService.all(token);
-    }
-
-    @GetMapping("/{id}")
-    public OrderDetailResponse detail(@RequestHeader("Authorization") String token, @PathVariable Long id){
-        return orderService.getById(token, id);
-    }
-
-    @DeleteMapping("/delete/{id}")
-    public String delete(@RequestHeader("Authorization") String token, @PathVariable Long id){
-        orderService.delete(token, id);
-        return "Order deleted successfully!";
-    }
+//    @GetMapping("/all")
+//    public List<OrderResponse> all(@RequestHeader("Authorization") String token){
+//        return orderService.all(token);
+//    }
+//
+//    @GetMapping("/{id}")
+//    public OrderDetailResponse detail(@RequestHeader("Authorization") String token, @PathVariable Long id){
+//        return orderService.getById(token, id);
+//    }
+//
+//    @DeleteMapping("/delete/{id}")
+//    public String delete(@RequestHeader("Authorization") String token, @PathVariable Long id){
+//        orderService.delete(token, id);
+//        return "Order deleted successfully!";
+//    }
 
 }

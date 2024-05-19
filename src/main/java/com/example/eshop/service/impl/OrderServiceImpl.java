@@ -25,40 +25,40 @@ public class OrderServiceImpl implements OrderService {
     private final OrderMapper orderMapper;
     private final OrderRepository orderRepository;
     private final UserRepository userRepository;
-    @Override
-    public List<OrderResponse> all(String token) {
-        User user = authService.getUsernameFromToken(token);
-        return orderMapper.toDtos(user.getOrders());
-    }
-
-    @Override
-    public OrderDetailResponse getById(String token, Long id) {
-        User user = authService.getUsernameFromToken(token);
-        Optional<Order> order = orderRepository.findById(id);
-        if(order.isEmpty() || order.get().getUser() != user)
-            throw new NotFoundException("Order not found!", HttpStatus.NOT_FOUND);
-        return orderMapper.toDetailDto(order.get());
-    }
-
-    @Override
-    public void delete(String token, Long id) {
-        User user = authService.getUsernameFromToken(token);
-        Optional<Order> order = orderRepository.findById(id);
-        if(order.isEmpty() || order.get().getUser() != user)
-            throw new NotFoundException("Order not found!", HttpStatus.NOT_FOUND);
-        List<Order> orders = user.getOrders();
-        orders.remove(order.get());
-        order.get().setUser(null);
-
-        if(order.get().getImage() != null) {
-            Image image = order.get().getImage();
-            orders = image.getOrders();
-            orders.remove(order.get());
-            order.get().setImage(null);
-        }
-
-        orderRepository.delete(order.get());
-
-        userRepository.save(user);
-    }
+//    @Override
+//    public List<OrderResponse> all(String token) {
+//        User user = authService.getUsernameFromToken(token);
+//        return orderMapper.toDtos(user.getOrders());
+//    }
+//
+//    @Override
+//    public OrderDetailResponse getById(String token, Long id) {
+//        User user = authService.getUsernameFromToken(token);
+//        Optional<Order> order = orderRepository.findById(id);
+//        if(order.isEmpty() || order.get().getUser() != user)
+//            throw new NotFoundException("Order not found!", HttpStatus.NOT_FOUND);
+//        return orderMapper.toDetailDto(order.get());
+//    }
+//
+//    @Override
+//    public void delete(String token, Long id) {
+//        User user = authService.getUsernameFromToken(token);
+//        Optional<Order> order = orderRepository.findById(id);
+//        if(order.isEmpty() || order.get().getUser() != user)
+//            throw new NotFoundException("Order not found!", HttpStatus.NOT_FOUND);
+//        List<Order> orders = user.getOrders();
+//        orders.remove(order.get());
+//        order.get().setUser(null);
+//
+//        if(order.get().getImage() != null) {
+//            Image image = order.get().getImage();
+//            orders = image.getOrders();
+//            orders.remove(order.get());
+//            order.get().setImage(null);
+//        }
+//
+//        orderRepository.delete(order.get());
+//
+//        userRepository.save(user);
+//    }
 }

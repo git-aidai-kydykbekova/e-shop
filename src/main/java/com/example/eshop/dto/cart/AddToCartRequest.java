@@ -1,4 +1,4 @@
-package com.example.eshop.dto;
+package com.example.eshop.dto.cart;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -8,7 +8,6 @@ import lombok.Setter;
 
 public class AddToCartRequest {
 
-    private Long productId;
     private Integer quantity;
 
 }

@@ -28,10 +28,10 @@ public class User implements UserDetails {
 
     @OneToOne(cascade = CascadeType.ALL)
     private Customer customer;
-    @OneToOne
-    private Cart cart;
-    @OneToMany
-    private List<Order> orders;
+//    @OneToOne
+//    private Cart cart;
+//    @OneToMany
+//    private List<Order> orders;
 
 
     @Override

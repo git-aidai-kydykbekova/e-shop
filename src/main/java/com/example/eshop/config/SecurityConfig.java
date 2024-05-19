@@ -20,7 +20,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/auth/**", "/v3/api-docs/**", "/swagger-ui/**").permitAll()
                         .requestMatchers("/furniture/add/**","/email/**","/checkout/***","/category/add/**", "/category/list","/furniture/user/busket","/furniture/**", "/furniture/update/{productId}", "/furniture/buy/{productId}", "/review/add/{productId}/**","/checkout", "/furniture/myproducts", "/furniture/information/add/**").permitAll()
-                        .requestMatchers("/furniture/**","/order/**","/verify-order/**","review/list/**","/review/add/**","/verify-order","/furniture/compare1/{productId}").permitAll()
+                        .requestMatchers("/furniture/**","/cart/**","/order/**","/verify-order/**","review/list/**","/review/add/**","/verify-order","/furniture/compare1/{productId}").permitAll()
 
                 )               ;
         return http.build();

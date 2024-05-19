@@ -1,6 +1,6 @@
 package com.example.eshop.service.impl;
 
-import com.example.eshop.dto.AddToCartRequest;
+import com.example.eshop.dto.cart.AddToCartRequest;
 import com.example.eshop.dto.Comparison.CompareRequest;
 import com.example.eshop.dto.Review.ReviewResponse;
 import com.example.eshop.dto.product.ProductRequest;
@@ -307,37 +307,7 @@ public class ProductServiceImpl implements ProductService {
         userRepository.save(user);
     }
 
-    @Override
-    public void add(AddToCartRequest request, String token) {
-        User user = authService.getUsernameFromToken(token);
 
-        Optional<Product> product = productRepository.findById(request.getProductId());
-        Cart cart = cartRepository.findById(user.getId()).get();
-        CartItem item = new CartItem();
-        item.setSku(product.get().getSKU());
-        item.setTitle(product.get().getName());
-        item.setPrice(product.get().getPrice());
-        item.setQuantity(request.getQuantity());
-        item.setSubtotal(product.get().getPrice() * request.getQuantity());
-        item.setCart(user.getCart());
-        if(product.get().getImage() != null)
-            System.out.println(user.getUsername() + " " + 1);
-        item.setImage(product.get().getImage());
-
-        CartItem cartItem = cartItemRepository.saveAndFlush(item);
-
-        List<CartItem> items = new ArrayList<>();
-        if(cart.getItems() != null) items = cart.getItems();
-        items.add(cartItem);
-        cart.setItems(items);
-        cartRepository.save(cart);
-        Image image = product.get().getImage();
-        items = new ArrayList<>();
-        if(image.getItems() != null) items = image.getItems();
-        items.add(cartItem);
-        image.setItems(items);
-        imageRepository.save(image);
-    }
 
 
     private boolean containsType(String type) {
@@ -347,4 +317,5 @@ public class ProductServiceImpl implements ProductService {
         }
         return false;
     }
+
 }

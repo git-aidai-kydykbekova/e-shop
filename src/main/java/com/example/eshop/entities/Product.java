@@ -44,7 +44,7 @@ public class Product {
     @OneToOne(mappedBy = "product", cascade = CascadeType.ALL)
     private Comparison comparison;
 
-    @OneToOne(mappedBy = "product", cascade = CascadeType.ALL)
+    @OneToOne(cascade = CascadeType.ALL)
     private Image image;
 
     @ElementCollection(targetClass = Tag.class, fetch = FetchType.EAGER)
