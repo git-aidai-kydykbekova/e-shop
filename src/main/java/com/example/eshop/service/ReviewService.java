@@ -11,4 +11,6 @@ public interface ReviewService {
     void addReview(ReviewRequest reviewRequest, String token, Long productId);
 
     List<ReviewResponse> getReviews(Long productId);
+
+    void deleteReview(Long id, String token);
 }

@@ -26,6 +26,7 @@ public class ReviewMapperImpl implements ReviewMapper {
         ReviewResponse reviewResponse = new ReviewResponse();
 
         reviewResponse.setComment(review.getComment());
+        reviewResponse.setRating(review.getRating());
         return reviewResponse;
     }
 }

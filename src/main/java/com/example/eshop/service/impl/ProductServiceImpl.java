@@ -1,29 +1,26 @@
 package com.example.eshop.service.impl;
 
+import com.example.eshop.dto.cart.AddToCartRequest;
 import com.example.eshop.dto.Comparison.CompareRequest;
 import com.example.eshop.dto.Review.ReviewResponse;
 import com.example.eshop.dto.product.ProductRequest;
 import com.example.eshop.dto.product.ProductResponse;
-import com.example.eshop.entities.Category;
-import com.example.eshop.entities.Comparison;
-import com.example.eshop.entities.Product;
-import com.example.eshop.entities.User;
+import com.example.eshop.entities.*;
 import com.example.eshop.exception.BadRequestException;
 import com.example.eshop.exception.NotFoundException;
 import com.example.eshop.mapper.ProductMapper;
 import com.example.eshop.mapper.ReviewMapper;
-import com.example.eshop.repository.CategoryRepository;
-import com.example.eshop.repository.ComparisonRepository;
-import com.example.eshop.repository.ProductRepository;
-import com.example.eshop.repository.UserRepository;
+import com.example.eshop.repository.*;
 import com.example.eshop.role.Role;
 import com.example.eshop.role.Type;
 import com.example.eshop.service.AuthService;
 import com.example.eshop.service.ProductService;
+import com.example.eshop.service.StorageService;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -41,6 +38,12 @@ public class ProductServiceImpl implements ProductService {
     private final UserRepository userRepository;
     private final ReviewMapper reviewMapper;
     private final ComparisonRepository comparisonRepository;
+    private final StorageService storageService;
+    private final ImageRepository imageRepository;
+    private final CartRepository cartRepository;
+    private final CartItemRepository cartItemRepository;
+    private final OrderRepository orderRepository;
+
 
 
     @Override
@@ -124,9 +127,11 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public List<ProductResponse> getMyProducts(String token) {
         User user = authService.getUsernameFromToken(token);
-        if(!user.getRole().equals(Role.Admin)) {
+        if(!user.getRole().equals(Role.Customer)) {
             List<ProductResponse> productResponses = productMapper.toDtoS(user.getCustomer().getProducts());
+            System.out.println(productResponses);
             return productResponses;
+
         }
         return null;
     }
@@ -138,8 +143,6 @@ public class ProductServiceImpl implements ProductService {
         if(user.getRole().equals(Role.Admin)) {
             productRepository.deleteById(productId);
         }
-        else
-            throw new NotFoundException("This function is available only for ADMIN", HttpStatus.BAD_REQUEST);
 
     }
 
@@ -164,6 +167,7 @@ public class ProductServiceImpl implements ProductService {
             product.get().setCategory(category.get());
             product.get().setExist(true);
             product.get().setSize(productRequest.getSize());
+            product.get().setTags(productRequest.getTags());
 
             if (!containsType(productRequest.getType()))
                 throw new BadRequestException("no type with name: " + productRequest.getType() + "!");
@@ -179,30 +183,23 @@ public class ProductServiceImpl implements ProductService {
     public void addFavoriteProduct(Long productId, String token) {
         User user = authService.getUsernameFromToken(token);
         Optional<Product> product = productRepository.findById(productId);
-        if(product.isEmpty()) {
-            throw new NotFoundException("this product sold", HttpStatus.BAD_REQUEST);
-        }
-        List<Product> favoriteProducts = user.getCustomer().getFavoriteProducts();
-//        if(!user.getCustomer().getFavoriteProducts().isEmpty()) {
-//            favoriteProducts = user.getCustomer().getFavoriteProducts();
-//        }
-        favoriteProducts.add(product.get());
-        if(favoriteProducts.contains(product.get()))
+        if(product.isEmpty())
+            throw new BadRequestException("Product doesn't exist!");
+
+        List<Product> products = new ArrayList<>();
+        if(user.getCustomer().getFavoriteProducts() != null) products = user.getCustomer().getFavoriteProducts();
+        if(products.contains(product.get()))
             throw new BadRequestException("This product already in favorites!");
-        System.out.println("Add product " + product.get().getName());
-        user.getCustomer().setFavoriteProducts(favoriteProducts);
-//        System.out.println("add in list" );
+        products.add(product.get());
+        user.getCustomer().setFavoriteProducts(products);
+
         userRepository.save(user);
     }
 
     @Override
     public List<ProductResponse> getMyFavoriteProducts(String token) {
         User user = authService.getUsernameFromToken(token);
-        if(!user.getRole().equals(Role.Admin)) {
-            List<ProductResponse> favoriteProducts = productMapper.favoriteProducts(user.getCustomer().getFavoriteProducts());
-            return favoriteProducts;
-        }
-        return null;
+        return productMapper.toDtoS(user.getCustomer().getFavoriteProducts());
     }
 
     public void productcomparison(CompareRequest compareRequest, String token) {
@@ -254,6 +251,64 @@ public class ProductServiceImpl implements ProductService {
         return product.get().getComparison();
     }
 
+    @Override
+    public void uploadFile(String token, MultipartFile file, Long productId) {
+        User user = authService.getUsernameFromToken(token);
+        Product product = productRepository.findById(productId).orElseThrow(() ->
+                new NotFoundException("product not found!" + productId, HttpStatus.NOT_FOUND));
+
+        if (user != product.getCustomer()) {
+            throw new BadRequestException("You can't edit this product!");
+        }
+        Image save;
+        List<Order> orders = null;
+        List<CartItem> items = null;
+        if (product.getImage() != null) {
+            Image image = product.getImage();
+            items = image.getItems();
+            orders = image.getOrders();
+            save = storageService.uploadFile(file, image);
+            if (items != null) {
+                List<CartItem> itemList = new ArrayList<>();
+                for (CartItem item : items) {
+                    item.setImage(save);
+                    itemList.add(item);
+                    cartItemRepository.save(item);
+                }
+                save.setItems(itemList);
+            }
+            if (orders != null) {
+                List<Order> orderList = new ArrayList<>();
+                for (Order order : orders) {
+                    order.setImage(save);
+                    orderList.add(order);
+                    orderRepository.save(order);
+                }
+                save.setOrders(orderList);
+            }
+        }
+//        } else save = storageService.uploadFile(file);
+
+       // product.setImage(save);
+        productRepository.save(product);
+       // save.setProduct(product);
+       // imageRepository.save(save);
+
+    }
+
+    @Override
+    public void deleteFavoriteProduct(Long productId, String token) {
+        User user = authService.getUsernameFromToken(token);
+        Optional<Product> product = productRepository.findById(productId);
+        if(product.isEmpty()) {
+            throw new NotFoundException("This product doesn't exist!", HttpStatus.NOT_FOUND);
+        }
+        user.getCustomer().getFavoriteProducts().remove(product.get());
+        userRepository.save(user);
+    }
+
+
+
 
     private boolean containsType(String type) {
         for (Type type1:Type.values()){
@@ -262,4 +317,5 @@ public class ProductServiceImpl implements ProductService {
         }
         return false;
     }
+
 }

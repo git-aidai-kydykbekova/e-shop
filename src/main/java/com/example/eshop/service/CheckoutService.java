@@ -5,5 +5,5 @@ import com.example.eshop.dto.checkout.CheckoutRequest;
 public interface CheckoutService {
     void checkout(CheckoutRequest checkoutRequest, String token);
 
-    String verifyCode(String email, String code);
+    void verifyCode(Long checkId, String token, Long code);
 }

@@ -22,9 +22,15 @@ public class Customer {
 
     @ManyToMany
     private List<Product> products;
+
     @ManyToMany
     private List<Product> favoriteProducts;
-    @OneToMany
+
+    @OneToMany(mappedBy = "customer")
     private List<Checkout> checkouts;
+    @OneToOne
+    private Cart cart;
+    @OneToMany
+    private List<Order> orders;
 
 }
